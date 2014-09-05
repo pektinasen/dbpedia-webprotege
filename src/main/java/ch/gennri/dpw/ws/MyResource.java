@@ -1,4 +1,4 @@
-package com.example;
+package ch.gennri.dpw.ws;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
