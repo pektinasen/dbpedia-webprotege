@@ -2,6 +2,7 @@ package ch.gennri.dpw.xml;
 
 import java.util.List;
 
+import org.simpleframework.xml.Default;
 import org.simpleframework.xml.ElementList;
 
 public class Property extends XmlElement{
@@ -14,6 +15,10 @@ public class Property extends XmlElement{
 	
 	@ElementList(entry="range", required=false)
 	List<String> ranges;
+	
+	public Property() {
+		super();
+	};
 	
 	public Property(String IRI, String op, String changed_by) {
 		super(IRI, op, changed_by);

@@ -14,6 +14,8 @@ public class Annotation {
 	@Text
 	private String text;
 
+	public Annotation(){};
+	
 	public Annotation(String type, String text) {
 		super();
 		this.type = type;

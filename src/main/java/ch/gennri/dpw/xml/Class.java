@@ -15,6 +15,9 @@ public class Class extends XmlElement {
 	@ElementList(entry="disjoint_class", required=false)
 	List<String> disjoint_classes;
 	
+	public Class(){
+		super();
+	};
 	public Class(String IRI,
 			String op,
 			String changed_by) {

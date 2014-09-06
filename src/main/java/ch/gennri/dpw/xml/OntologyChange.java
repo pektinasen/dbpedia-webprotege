@@ -18,6 +18,9 @@ public class OntologyChange{
 	@ElementList(entry="data_property", inline=true, required=false)
 	List<Property> dataProperties;
 	
+	public OntologyChange() {
+	}
+	
 	public List<Class> getClasses() {
 		return classes;
 	}
@@ -41,5 +44,7 @@ public class OntologyChange{
 	public void setDataProperties(List<Property> dataProperties) {
 		this.dataProperties = dataProperties;
 	}
+
+
 	
 }

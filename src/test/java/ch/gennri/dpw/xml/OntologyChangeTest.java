@@ -98,6 +98,13 @@ public class OntologyChangeTest {
 		
 		String fileToString = FileUtils.readFileToString(new File("src/test/resources/pizzaTest.xml"));
 		assertEquals(fileToString, sw.toString());
+	}
+	
+	@Test
+	public void readPizzaTest() throws Exception {
+		Persister serializer = new Persister();
+		OntologyChange read = serializer.read(OntologyChange.class, new File("src/test/resources/pizzaTest.xml"));
+		assertNotNull(read);
 		
 	}
 }

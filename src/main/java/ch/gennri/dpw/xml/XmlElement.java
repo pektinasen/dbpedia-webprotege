@@ -19,6 +19,10 @@ public class XmlElement {
 	@ElementList(entry="annotation", data=true, required=false)
 	List<Annotation> annotations;
 	
+	public XmlElement() {
+		super();
+	}
+	
 	public XmlElement(String IRI, String changed_by, String op) {
 		this.IRI = IRI;
 		this.op = op;
@@ -55,4 +59,6 @@ public class XmlElement {
 	public void setAnnotations(List<Annotation> annotations) {
 		this.annotations = annotations;
 	}
+
+
 }
