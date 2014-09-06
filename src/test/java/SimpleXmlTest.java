@@ -1,42 +1,27 @@
-import static org.junit.Assert.*;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.ElementTraversal;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
 public class SimpleXmlTest {
-	
-}
 
-class @Root
-public class Example {
+	@Test
+	public void testName() throws Exception {
+		Serializer serializer = new Persister();
+		List<String> list = Arrays.asList(new String[]{"a","b","c"});
+		Example example = new Example("Example message", 123,list);
+		List<Foo> foos = new LinkedList<Foo>();
+		foos.add(new Foo("1"));
+		foos.add(new Foo("2"));
+		foos.add(new Foo("3"));
+		example.setFoos(foos);
+		File result = new File("example.xml");
 
-	   @Element
-	   private String text;
-
-	   @Attribute
-	   private int index;
-
-	   public Example() {
-	      super();
-	   }  
-
-	   public Example(String text, int index) {
-	      this.text = text;
-	      this.index = index;
-	   }
-
-	   public String getMessage() {
-	      return text;
-	   }
-
-	   public int getId() {
-	      return index;
-	   }
+		serializer.write(example, result);
 	}
+
+}

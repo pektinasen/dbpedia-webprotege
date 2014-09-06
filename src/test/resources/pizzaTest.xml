@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ontology_change>
+   <class IRI="http://www.pizza.com/ontologies/pizza.owl#PizzaBase" changed_by="laparmakerli" op="add">
+      <annotations>
+         <annotation type="rdfs:label@de">Pizza</annotation>
+         <annotation type="rdfs:comment">Pizza ...</annotation>
+      </annotations>
+      <sub_classes>
+         <sub_class>http://www.pizza.com/ontologies/pizza.owl#DeepPanBase</sub_class>
+         <sub_class>http://www.pizza.com/ontologies/pizza.owl#ThinAndCrispyBase</sub_class>
+      </sub_classes>
+   </class>
+   <class IRI="...stanford.edu/TestClass" changed_by="laparmakerli" op="remove" />
+   <object_property IRI="http://www.pizza.com/ontologies/pizza.owl#hasIngredient" changed_by="laparmakerli" op="add">
+      <sub_properties>
+         <sub_property>http://www.pizza.com/ontologies/pizza.owl#hasBase</sub_property>
+         <sub_property>http://www.pizza.com/ontologies/pizza.owl#hasTopping</sub_property>
+      </sub_properties>
+   </object_property>
+   <object_property IRI="http://www.pizza.com/ontologies/pizza.owl#isBaseOf" changed_by="laparmakerli" op="add">
+      <domains>
+         <domain>http://www.pizza.com/ontologies/pizza.owl#PizzaBase</domain>
+      </domains>
+      <ranges>
+         <range>http://www.pizza.com/ontologies/pizza.owl#Pizza</range>
+      </ranges>
+   </object_property>
+   <data_property IRI="dataProperty" changed_by="laparmakerli" op="add">
+      <domains>
+         <domain>http://www.pizza.com/ontologies/pizza.owl#Pizza</domain>
+      </domains>
+      <ranges>
+         <range>xsd:float</range>
+      </ranges>
+   </data_property>
+   
+</ontology_change>
