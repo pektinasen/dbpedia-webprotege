@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -15,8 +16,7 @@ public class Example {
 	private int index;
 	
 	@ElementList(entry="annotation")
-	private
-	List<String> annotations;
+	private List<String> annotations;
 
 	@ElementList(inline=true)
 	private List<Foo> foos;
@@ -58,6 +58,7 @@ public class Example {
 }
 
 class Foo {
+	
 	@Element
 	String bla;
 
