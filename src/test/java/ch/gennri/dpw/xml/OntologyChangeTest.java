@@ -1,6 +1,7 @@
 package ch.gennri.dpw.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -11,8 +12,15 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Type;
+import org.simpleframework.xml.strategy.Visitor;
+import org.simpleframework.xml.strategy.VisitorStrategy;
+import org.simpleframework.xml.stream.Format;
+import org.simpleframework.xml.stream.InputNode;
+import org.simpleframework.xml.stream.NodeMap;
+import org.simpleframework.xml.stream.OutputNode;
 
 public class OntologyChangeTest {
 
@@ -35,10 +43,10 @@ public class OntologyChangeTest {
 				"http://www.pizza.com/ontologies/pizza.owl#ThinAndCrispyBase"
 		
 		});
-		final Class classOne = new Class(PIZZA_BASE_IRI, "laparmakerli", OPERATION_ADD);
+		final Class classOne = new Class(PIZZA_BASE_IRI, OPERATION_ADD, "laparmakerli");
 		classOne.setAnnotations(annotations);
 		classOne.setSub_classes(sub_classes);
-		Class classTwo = new Class("...stanford.edu/TestClass", "laparmakerli", OPERATION_REMOVE);
+		Class classTwo = new Class("...stanford.edu/TestClass", OPERATION_REMOVE, "laparmakerli");
 		classes.add(classOne);
 		classes.add(classTwo);
 		final Property objectPropertyOne = new Property(
@@ -72,8 +80,7 @@ public class OntologyChangeTest {
 		
 		final Property dataProperty = new Property(
 				"dataProperty",
-				"laparmakerli",
-				OPERATION_ADD);
+				OPERATION_ADD, "laparmakerli");
 		dataProperty.setDomains(
 				Arrays.asList(new String[]{
 						"http://www.pizza.com/ontologies/pizza.owl#Pizza"
@@ -91,7 +98,24 @@ public class OntologyChangeTest {
 		ontologyChange.setObjectProperties(objectProperties);
 		ontologyChange.setDataProperties(dataProperties);
 		
-		Serializer serializer = new Persister();
+		VisitorStrategy strategy = new VisitorStrategy(new Visitor() {
+			
+			@Override
+			public void write(Type type, NodeMap<OutputNode> node) throws Exception {
+				if (java.util.List.class.equals(type.getType())) {
+					node.remove("class");
+				}
+			}
+			
+			@Override
+			public void read(Type type, NodeMap<InputNode> node) throws Exception {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		Format format = new Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"); 
+		Serializer serializer = new Persister(strategy,format);
 		StringWriter sw = new StringWriter();
 		serializer.write(ontologyChange, sw);
 		

@@ -34,9 +34,6 @@ public class SimpleXmlTest {
 			
 			@Override
 			public void write(Type type, NodeMap<OutputNode> node) throws Exception {
-				System.out.println("type: " + type);
-				System.out.println("nodemap: " + node);				
-				System.out.println(node.getName());
 				if ("annotations".equals(node.getName())){
 					node.remove("class");
 				}

@@ -23,7 +23,7 @@ public class XmlElement {
 		super();
 	}
 	
-	public XmlElement(String IRI, String changed_by, String op) {
+	public XmlElement(String IRI, String op, String changed_by) {
 		this.IRI = IRI;
 		this.op = op;
 		this.changed_by = changed_by;

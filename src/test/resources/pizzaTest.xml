@@ -10,7 +10,7 @@
          <sub_class>http://www.pizza.com/ontologies/pizza.owl#ThinAndCrispyBase</sub_class>
       </sub_classes>
    </class>
-   <class IRI="...stanford.edu/TestClass" changed_by="laparmakerli" op="remove" />
+   <class IRI="...stanford.edu/TestClass" changed_by="laparmakerli" op="remove"/>
    <object_property IRI="http://www.pizza.com/ontologies/pizza.owl#hasIngredient" changed_by="laparmakerli" op="add">
       <sub_properties>
          <sub_property>http://www.pizza.com/ontologies/pizza.owl#hasBase</sub_property>
@@ -33,5 +33,4 @@
          <range>xsd:float</range>
       </ranges>
    </data_property>
-   
 </ontology_change>
