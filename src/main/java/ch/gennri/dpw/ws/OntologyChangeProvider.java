@@ -18,6 +18,7 @@ import javax.ws.rs.ext.Provider;
 import ch.gennri.dpw.xml.OntologyChange;
 import ch.gennri.dpw.xml.OntologyChangePersister;
 
+@Provider
 @Produces("application/xml")
 @Consumes("application/xml")
 public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>, MessageBodyWriter<OntologyChange> {
@@ -25,7 +26,6 @@ public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
-		System.out.println("is writabel");
 		return type == OntologyChange.class;
 	}
 
@@ -56,9 +56,6 @@ public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>
 	public boolean isReadable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
 		// TODO Auto-generated method stub
-		System.out.println("is readable");
-		System.out.println("type: " + type);
-		System.out.println("gentype: " + genericType);
 		return type == OntologyChange.class;
 	}
 
@@ -67,7 +64,6 @@ public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>
 			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		System.out.println("read from");
 		OntologyChangePersister persister = new OntologyChangePersister();
 		try {
 			return persister.read(OntologyChange.class, entityStream);

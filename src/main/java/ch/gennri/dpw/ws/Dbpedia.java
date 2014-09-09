@@ -27,8 +27,7 @@ public class Dbpedia {
 	@GET
 	@Produces("text/plain")
 	public String getIt() {
-		// TODO Auto-generated method stub
-		return "lalalalala";
+		return "foobars";
 	}
 	
 	@POST
