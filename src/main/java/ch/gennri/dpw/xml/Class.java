@@ -1,5 +1,6 @@
 package ch.gennri.dpw.xml;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.simpleframework.xml.ElementList;
@@ -17,11 +18,17 @@ public class Class extends XmlElement {
 	
 	public Class(){
 		super();
+		disjoint_classes = new LinkedList<String>();
+		equivalent_classes = new LinkedList<String>();
+		sub_classes = new LinkedList<String>();
 	};
 	public Class(String IRI,
 			String op,
 			String changed_by) {
 		super(IRI, op, changed_by);
+		disjoint_classes = new LinkedList<String>();
+		equivalent_classes = new LinkedList<String>();
+		sub_classes = new LinkedList<String>();
 	}
 
 	public List<String> getSub_classes() {

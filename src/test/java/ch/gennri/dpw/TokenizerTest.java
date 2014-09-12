@@ -32,55 +32,55 @@ public class TokenizerTest {
 		Token musicalWork = new Token(TokenType.Name, "MusicalWork");
 		Token owlToken = new Token(TokenType.Name, "owl:equivalentClass");
 		
-		Token token1 = tokenizer.nextToken();
+		Token token1 = tokenizer.next();
 		assertEquals(templateBegin , token1);
 		
-		Token token2 = tokenizer.nextToken();
+		Token token2 = tokenizer.next();
 		assertEquals(wordClass , token2);
 		
-		Token token3 = tokenizer.nextToken();
+		Token token3 = tokenizer.next();
 		assertEquals(parameterSeperator , token3);
 		
-		Token token4 = tokenizer.nextToken();
+		Token token4 = tokenizer.next();
 		assertEquals(rdfsLabelEn , token4);
 		
-		Token token44 = tokenizer.nextToken();
+		Token token44 = tokenizer.next();
 		assertEquals(equals , token44);
 		
-		Token token5 = tokenizer.nextToken();
+		Token token5 = tokenizer.next();
 		assertEquals(album , token5);
 		
-		Token token6 = tokenizer.nextToken();
+		Token token6 = tokenizer.next();
 		assertEquals(parameterSeperator , token6);
 		
-		Token token7 = tokenizer.nextToken();
+		Token token7 = tokenizer.next();
 		assertEquals(rdfsSubclassOf , token7);
 		
-		Token token8 = tokenizer.nextToken();
+		Token token8 = tokenizer.next();
 		assertEquals(equals , token8);
 		
-		Token token9 = tokenizer.nextToken();
+		Token token9 = tokenizer.next();
 		assertEquals(musicalWork , token9);
 		
-		Token token10 = tokenizer.nextToken();
+		Token token10 = tokenizer.next();
 		assertEquals(parameterSeperator , token10);
 		
-		Token token11 = tokenizer.nextToken();
+		Token token11 = tokenizer.next();
 		assertEquals(owlToken , token11);
 		
-		Token token12 = tokenizer.nextToken();
+		Token token12 = tokenizer.next();
 		assertEquals(equals , token12);
 		
-		Token token13 = tokenizer.nextToken();
+		Token token13 = tokenizer.next();
 		assertEquals(schemaMusicAlbum , token13);
 		
-		Token token14 = tokenizer.nextToken();
+		Token token14 = tokenizer.next();
 		assertEquals(comma , token14);
 		
-		Token token15 = tokenizer.nextToken();
+		Token token15 = tokenizer.next();
 		assertEquals(wikidata , token15);
 		
-		Token token16 = tokenizer.nextToken();
+		Token token16 = tokenizer.next();
 		assertEquals(templateEnd , token16);
 	}
 	

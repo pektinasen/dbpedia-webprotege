@@ -31,7 +31,7 @@ public class Tokenizer{
 		symbols.add(",".charAt(0));
 	}
 
-	public Token nextToken() throws ParseException {
+	public Token next() throws ParseException {
 		nextChar();
 		skipWhitespaceAndNewline();
 		if (endOfStream())
@@ -54,11 +54,11 @@ public class Tokenizer{
 	
 	private Token readName() throws ParseException {
 		storeCurrentCharAndReadNext();
-	    while (isPartOfWord(currentChar)){
-	    	storeCurrentCharAndReadNext();
-	    }
+		while (isPartOfWord(currentChar)){
+			storeCurrentCharAndReadNext();
+		}
 	
-	    return new Token(TokenType.Name, extractStoredChars());
+		return new Token(TokenType.Name, extractStoredChars());
 	}
 	
 	private boolean isPartOfWord(int character) {
@@ -126,21 +126,28 @@ public class Tokenizer{
 		}
 	}
 	
-	void storeCurrentCharAndReadNext() throws ParseException
-	{
-	    builder.append((char) currentChar);
-	    nextChar();
+	void storeCurrentCharAndReadNext() throws ParseException {
+		builder.append((char) currentChar);
+		nextChar();
 	}
 	
 	private boolean endOfStream() {
 		return currentChar < 0;
 	}
 	
-	private String extractStoredChars()
-	{
-	    String value = builder.toString();
-	    builder = new StringBuilder();
-	    return value;
+	private String extractStoredChars() {
+		String value = builder.toString();
+		builder = new StringBuilder();
+		return value;
+	}
+	
+	
+	public int getLine() {
+		return this.line;
+	}
+	
+	public int getIndex() {
+		return this.index;
 	}
 }
 
@@ -184,6 +191,7 @@ class Token {
 			return false;
 		return true;
 	}
+
 	
 	@Override
 	public String toString() {

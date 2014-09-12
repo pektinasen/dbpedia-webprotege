@@ -1,5 +1,6 @@
 package ch.gennri.dpw.xml;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -21,12 +22,14 @@ public class XmlElement {
 	
 	public XmlElement() {
 		super();
+		annotations = new LinkedList<>();
 	}
 	
 	public XmlElement(String IRI, String op, String changed_by) {
 		this.IRI = IRI;
 		this.op = op;
 		this.changed_by = changed_by;
+		annotations = new LinkedList<>();
 	}
 
 	public String getIRI() {
