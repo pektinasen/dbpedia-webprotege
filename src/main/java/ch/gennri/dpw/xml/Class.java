@@ -18,20 +18,18 @@ public class Class extends XmlElement {
 	
 	public Class(){
 		super();
-		disjoint_classes = new LinkedList<String>();
-		equivalent_classes = new LinkedList<String>();
-		sub_classes = new LinkedList<String>();
 	};
+	
 	public Class(String IRI,
 			String op,
 			String changed_by) {
 		super(IRI, op, changed_by);
-		disjoint_classes = new LinkedList<String>();
-		equivalent_classes = new LinkedList<String>();
-		sub_classes = new LinkedList<String>();
 	}
 
 	public List<String> getSub_classes() {
+		if (sub_classes == null) {
+			sub_classes = new LinkedList<>();
+		}
 		return sub_classes;
 	}
 
@@ -40,6 +38,9 @@ public class Class extends XmlElement {
 	}
 
 	public List<String> getEquivalent_classes() {
+		if (equivalent_classes == null) {
+			equivalent_classes = new LinkedList<>();
+		}
 		return equivalent_classes;
 	}
 
@@ -48,6 +49,9 @@ public class Class extends XmlElement {
 	}
 
 	public List<String> getDisjoint_classes() {
+		if (disjoint_classes == null) {
+			disjoint_classes = new LinkedList<>();
+		}
 		return disjoint_classes;
 	}
 

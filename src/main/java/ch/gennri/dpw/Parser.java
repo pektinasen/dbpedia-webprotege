@@ -6,33 +6,41 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.gennri.dpw.xml.Annotation;
 import ch.gennri.dpw.xml.Class;
 import ch.gennri.dpw.xml.OntologyChange;
+import ch.gennri.dpw.xml.Property;
+import ch.gennri.dpw.xml.XmlElement;
 
 public class Parser {
+
+	private static Logger logger = LoggerFactory.getLogger(Parser.class);
 
 	private Tokenizer tokenizer;
 	private OntologyChange oc;
 	private List<String> validTemplateNames = Arrays.asList("Class",
 			"DatatypeProperty", "ObjectProperty");
 
-	private boolean rootTemplate;
 	private Token currentToken;
+
 	
 	private static final Pattern rdfsLabel = Pattern.compile("rdfs:label(?:@[a-z]{2})?");
 	private static final Pattern rdfsSubClassOf = Pattern.compile("rdfs:subClassOf");
+	private static final  Pattern rdfsSubPropertyOf = Pattern.compile("rdfs:subPropertyOf");
 	private static final Pattern owlEquivalentOf = Pattern.compile("owl:equivalentClass");
 	
 	
 	public Parser(Tokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 		this.oc = new OntologyChange();
-		this.rootTemplate = true;
 	}
 
 	public OntologyChange parse() throws ParseException {
-		currentToken = tokenizer.next();
+		logger.debug("begin parsing");
+		nextToken();
 		if (!isBeginTemplate(currentToken)) {
 			throw new ParseException("", tokenizer.getLine(),
 					tokenizer.getIndex());
@@ -42,48 +50,79 @@ public class Parser {
 	}
 
 	private void readTemplate() throws ParseException {
-		currentToken = tokenizer.next();
+		nextToken();
 		if (isValidName(currentToken)) {
 			switch (currentToken.value) {
 			case "Class":
-				if (!rootTemplate) {
-					throw new ParseException("expected \"label\" but found \"Class\"",
-							tokenizer.getLine(), tokenizer.getIndex());
-				} else {
-					readClass();
-				}
+				readClass();
 				break;
 			case "DatatypeProperty":
-			case "ObjectProperty":
-				if (!rootTemplate) {
-					throw new ParseException("expected \"label\" but found \""+ currentToken.value+"\"",
-							tokenizer.getLine(), tokenizer.getIndex());
-				}else {
-					readProperty();
-				}
+				readDatatypeProperty();
 				break;
-			case "label":
-				if (rootTemplate) {
-					throw new ParseException("expected one of "+ validTemplateNames +" but found \"label\"",
-							tokenizer.getLine(), tokenizer.getIndex());
-				}
+			case "ObjectProperty":
+				readObjectProperty();
 				break;
 			default:
 				throw new ParseException("unknown template name",
 						tokenizer.getLine(), tokenizer.getIndex());
 			}
-
 		}
-
 	}
 
-	private void readProperty() {
-		
+	private void readDatatypeProperty() throws ParseException {
+		Property property = readProperty();
+		oc.getDataProperties().add(property);
+	}
+
+	private Property readProperty() throws ParseException {
+		logger.debug("readProperty");
+		nextToken();
+		Property property = new Property();
+		while (isParameter(currentToken)) {
+			parseParameter(property);
+		}
+		return property;
+	}
+	private void parseParameter(Property property) throws ParseException {
+		nextToken();
+		if (!currentToken.type.equals(TokenType.Name)) {
+			throw new ParseException("", 0, 0);
+		}
+		if (rdfsLabel.matcher(currentToken.value).matches()){
+			parseAnnotations(property);
+		} else if ("labels".equals(currentToken.value)){
+			nextToken();
+			assertIsEqualSign();
+			nextToken();
+			assertBeginTemplate();
+			while (isBeginTemplate(currentToken)) {
+				parseLabelsAnnotations(property);
+			}
+		} else if ("comments".equals(currentToken.value)){
+			nextToken();
+			assertIsEqualSign();
+			nextToken();
+			assertBeginTemplate();
+			while (isBeginTemplate(currentToken)) {
+				parseCommentsAnnotations(property);
+			}
+		} else if (rdfsSubPropertyOf.matcher(currentToken.value).matches()) {
+			parseSubPropertyOf(property);
+		} 
+	}
+
+	private void parseSubPropertyOf(Property property) {
+		// TODO Auto-generated method stub
+	}
+
+	private void readObjectProperty() throws ParseException {
+		Property property = readProperty();
+		oc.getObjectProperties().add(property);
 	}
 
 	private void readClass() throws ParseException {
 		Class clazz = new Class();
-		currentToken = tokenizer.next();
+		nextToken();
 		while (isParameter(currentToken)) {
 			parseParameter(clazz);
 		}
@@ -91,17 +130,110 @@ public class Parser {
 	}
 
 	private void parseParameter(Class clazz) throws ParseException {
-		currentToken = tokenizer.next();
+		nextToken();
 		if (!currentToken.type.equals(TokenType.Name)) {
 			throw new ParseException("", 0, 0);
 		}
 		if (rdfsLabel.matcher(currentToken.value).matches()){
 			parseAnnotations(clazz);
+		} else if ("labels".equals(currentToken.value)){
+			parseLabelsAnnotations(clazz);
+		} else if ("comments".equals(currentToken.value)){
+			parseCommentsAnnotations(clazz);
 		} else if (rdfsSubClassOf.matcher(currentToken.value).matches()) {
 			parseSubClassOf(clazz);
 		} else if (owlEquivalentOf.matcher(currentToken.value).matches()) {
 			parseEquivalentClass(clazz);
 		} 
+	}
+
+	private void parseCommentsAnnotations(XmlElement element) throws ParseException {
+		Annotation annotation = new Annotation();
+		nextToken();
+		assertIsComment();
+		nextToken();
+		assertParameter();
+		nextToken();
+		if (isParameter(currentToken)) {
+			annotation.setType("rdfs:comment");
+		} else {
+			annotation.setType("rdfs:comment@" + currentToken.value);
+			nextToken();
+		}
+		assertParameter();
+		nextToken();
+		StringBuilder sb = new StringBuilder();
+		while (!isEndTemplate()) {
+			sb.append(currentToken.value);
+			sb.append(" ");
+			nextToken();
+		}
+		annotation.setAnnotation(sb.toString().trim());
+		element.getAnnotations().add(annotation);
+		assertEndTemplate();
+		nextToken();
+	}
+
+	private void assertIsComment() throws ParseException {
+		assertToken(new Token(TokenType.Name, "comment"));
+	}
+
+	private void assertEndTemplate() throws ParseException {
+		if (!currentToken.equals(new Token(TokenType.Symbol, "}}"))) {
+			throw new ParseException("end template expected", tokenizer.getLine(), tokenizer.getIndex());
+		}
+	}
+
+	private void assertParameter() throws ParseException {
+		if (!isParameter(currentToken)) {
+			throw new ParseException("parameter seperator | expected", tokenizer.getLine(), tokenizer.getIndex());
+		}
+	}
+
+	private void assertToken(Token token) throws ParseException {
+		if (!currentToken.equals(token)) {
+			throw new ParseException("something else expected", tokenizer.getLine(), tokenizer.getIndex());
+		}
+	}
+	private void assertBeginTemplate() throws ParseException {
+		if (!currentToken.equals(new Token(TokenType.Symbol, "{{"))) {
+			throw new ParseException("begin template expected", tokenizer.getLine(), tokenizer.getIndex());
+		}
+	}
+
+	private void parseLabelsAnnotations(XmlElement element) throws ParseException {
+		Annotation annotation = new Annotation();
+		nextToken();
+		assertIsLabel();
+		nextToken();
+		assertParameter();
+		nextToken();
+		if (isParameter(currentToken)) {
+			annotation.setType("rdfs:label");
+		} else {
+			annotation.setType("rdfs:label@" + currentToken.value);
+			nextToken();
+		}
+		assertParameter();
+		nextToken();
+		StringBuilder sb = new StringBuilder();
+		while (!isEndTemplate()) {
+			sb.append(currentToken.value);
+			sb.append(" ");
+			nextToken();
+		}
+		annotation.setAnnotation(sb.toString().trim());
+		element.getAnnotations().add(annotation);
+		assertEndTemplate();
+		nextToken();
+	}
+
+	private boolean isEndTemplate() {
+		return new Token(TokenType.Symbol, "}}").equals(currentToken);
+	}
+
+	private void assertIsLabel() throws ParseException {
+		assertToken(new Token(TokenType.Name, "label"));
 	}
 
 	private void parseSubClassOf(Class clazz) throws ParseException {
@@ -157,19 +289,20 @@ public class Parser {
 
 	private void nextToken() throws ParseException {
 		currentToken = tokenizer.next();
+		logger.debug("token: " + currentToken.value);
 	}
 
-	private void parseAnnotations(Class clazz) throws ParseException {
+	private void parseAnnotations(XmlElement element) throws ParseException {
 		Annotation annotation = new Annotation();
 		annotation.setType(currentToken.value);
-		currentToken = tokenizer.next();
+		nextToken();
 		assertIsEqualSign();
-		currentToken = tokenizer.next();
+		nextToken();
 		if (!currentToken.type.equals(TokenType.Name)) {
 			throw new ParseException("", 0, 0);
 		}
 		annotation.setAnnotation(currentToken.value);
-		clazz.getAnnotations().add(annotation);
+		element.getAnnotations().add(annotation);
 		nextToken();
 	}
 

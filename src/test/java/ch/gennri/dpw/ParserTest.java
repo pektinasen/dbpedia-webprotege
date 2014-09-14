@@ -7,6 +7,7 @@ import org.junit.Test;
 import ch.gennri.dpw.xml.Annotation;
 import ch.gennri.dpw.xml.Class;
 import ch.gennri.dpw.xml.OntologyChange;
+import ch.gennri.dpw.xml.Property;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static ch.gennri.dpw.Tokens.*;
@@ -14,24 +15,24 @@ import static ch.gennri.dpw.Tokens.*;
 public class ParserTest {
 
 	@Test
-	public void classOneLabelTemplate() throws ParseException {
+	public void classWithRdfsLabel() throws ParseException {
 		Tokenizer tokenizerMock = mock(Tokenizer.class);
 		when(tokenizerMock.next()).thenReturn(
 				templateBegin,
 				wordClass,
-				parameterSeperator,
+				symbolParametSep,
 				rdfsLabelEn,
-				equals,
+				symbolEquals,
 				album,
-				parameterSeperator,
+				symbolParametSep,
 				rdfsSubclassOf,
-				equals,
+				symbolEquals,
 				musicalWork,
-				parameterSeperator,
-				owlToken,
-				equals,
+				symbolParametSep,
+				owlEquivalent,
+				symbolEquals,
 				schemaMusicAlbum,
-				comma,
+				symbolComma,
 				wikidata,
 				templateEnd);
 		
@@ -46,8 +47,60 @@ public class ParserTest {
 		assertEquals("MusicalWork", subClass);
 		assertEquals("schema:MusicAlbum", equiClasses.get(0));
 		assertEquals("wikidata:Q482994", equiClasses.get(1));
+	}
+	
+	@Test
+	public void classWithLabelTemplate() throws Exception {
+		Tokenizer tokenizerMock = mock(Tokenizer.class);
+		when(tokenizerMock.next()).thenReturn(
+			Tokens.templateBegin,
+			Tokens.wordObjectproperty,
+			Tokens.symbolParametSep,
+			Tokens.labels,
+			Tokens.symbolEquals,
+			Tokens.templateBegin,
+			Tokens.label,
+			Tokens.symbolParametSep,
+			Tokens.nameEn,
+			Tokens.symbolParametSep,
+			Tokens.nameSchool,
+			Tokens.templateEnd,
+			Tokens.templateBegin,
+			Tokens.label,
+			Tokens.symbolParametSep,
+			Tokens.nameDe,
+			Tokens.symbolParametSep,
+			Tokens.nameSchule,
+			Tokens.templateEnd,
+			Tokens.symbolParametSep,
+			Tokens.comments,
+			Tokens.symbolEquals,
+			Tokens.templateBegin,
+			Tokens.comment,
+			Tokens.symbolParametSep,
+			Tokens.nameEn,
+			Tokens.symbolParametSep,
+			Tokens.commentSchool1,
+			Tokens.commentSchool2,
+			Tokens.commentSchool3,
+			Tokens.commentSchool4,
+			Tokens.commentSchool5,
+			Tokens.templateEnd,
+			Tokens.templateEnd
+		);
 		
-		
-
+		Parser parser = new Parser(tokenizerMock);
+		OntologyChange oc = parser.parse();
+		Property objectProperty = oc.getObjectProperties().get(0);
+		List<Annotation> annotations = objectProperty.getAnnotations();
+		Annotation annotation0 = annotations.get(0);
+		Annotation annotation1 = annotations.get(1);
+		Annotation annotation2 = annotations.get(2);
+		assertEquals("rdfs:label@en", annotation0.getType());
+		assertEquals("School", annotation0.getAnnotation());
+		assertEquals("rdfs:label@de", annotation1.getType());
+		assertEquals("Schule", annotation1.getAnnotation());
+		assertEquals("rdfs:comment@en", annotation2.getType());
+		assertEquals("school a person goes to", annotation2.getAnnotation());
 	}
 }

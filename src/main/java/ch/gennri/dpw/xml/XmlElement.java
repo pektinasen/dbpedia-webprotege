@@ -22,14 +22,12 @@ public class XmlElement {
 	
 	public XmlElement() {
 		super();
-		annotations = new LinkedList<>();
 	}
 	
 	public XmlElement(String IRI, String op, String changed_by) {
 		this.IRI = IRI;
 		this.op = op;
 		this.changed_by = changed_by;
-		annotations = new LinkedList<>();
 	}
 
 	public String getIRI() {
@@ -56,6 +54,9 @@ public class XmlElement {
 		this.changed_by = changed_by;
 	}
 	public List<Annotation> getAnnotations() {
+		if (annotations == null) {
+			annotations = new LinkedList<>();
+		}
 		return annotations;
 	}
 

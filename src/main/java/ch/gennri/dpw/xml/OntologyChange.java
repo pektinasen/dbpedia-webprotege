@@ -1,5 +1,6 @@
 package ch.gennri.dpw.xml;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -30,6 +31,9 @@ public class OntologyChange{
 	}
 
 	public List<Property> getObjectProperties() {
+		if (objectProperties == null) {
+			objectProperties = new LinkedList<>();
+		}
 		return objectProperties;
 	}
 
@@ -38,6 +42,9 @@ public class OntologyChange{
 	}
 
 	public List<Property> getDataProperties() {
+		if (dataProperties == null) {
+			dataProperties = new LinkedList<>();
+		}
 		return dataProperties;
 	}
 
