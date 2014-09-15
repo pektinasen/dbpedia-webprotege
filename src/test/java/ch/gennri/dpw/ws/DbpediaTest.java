@@ -20,31 +20,41 @@ import org.glassfish.jersey.test.TestProperties;
 import org.glassfish.jersey.test.jetty.JettyTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class DbpediaTest extends JerseyTest {
 
-	public static class MyHK2Binder extends AbstractBinder {
-		@Override
-		protected void configure() {
-		// request scope binding
-//		bindAsContract(MyObject.class).in(RequestScoped.class);
-		// singleton binding
-//		bindAsContract(MyInjectableSingleton.class).in(Singleton.class);
-//		// singleton instance binding
-		bind(new MyObject()).to(MyObject.class);
-//		// request scope binding with specified custom annotation
-//		bindAsContract(MyInjectablePerRequest.class).qualifiedBy(new MyQualifierImpl()).in(RequestScoped.class);
-		}
+	public static String dbpediaFile;
+	public static String dbpediaSaveFile;
+	public static String dbpediaDeleteFile;
+	
+	private DbpediaController dc;
+	private WebProtegeController wc;
+	
+	@BeforeClass
+	public static void staticSetUp() throws IOException {
+		
+		dbpediaFile = FileUtils.readFileToString(new File("src/test/resources/dbpedia_label.txt"));
+//		dbpediaFile = FileUtils.readFileToString(new File("src/test/resources/dbpedia_save.txt"));
+//		dbpediaFile = FileUtils.readFileToString(new File("src/test/resources/dbpedia_delete.txt"));
 	}
 	
 	@Override
 	protected Application configure() {
+		dc = mock(DbpediaController.class);
+		wc = mock(WebProtegeController.class);
 		enable(TestProperties.LOG_TRAFFIC);
-	
 		ResourceConfig resourceConfig = new ResourceConfig(Dbpedia.class);
 		resourceConfig.register(OntologyChangeProvider.class);
-		resourceConfig.register(new MyHK2Binder());
+		resourceConfig.register(new MyHK2Binder(wc, dc));
 		return resourceConfig;
 	}
 
@@ -54,20 +64,28 @@ public class DbpediaTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGet() {
+	public void testPost() throws IOException {
 		WebTarget t = target("dbpedia");
-
-		String s = t.request().get(String.class);
-		Assert.assertEquals("foobars", s);
+		
+		Response response = t.request().post(Entity.entity(dbpediaFile, MediaType.APPLICATION_XML));
+		assertEquals(200, response.getStatus());
+		assertEquals("heyho", response.readEntity(String.class));
 	}
 	
 	@Test
-	public void testPost() throws IOException {
-		String dbpediaFile = FileUtils.readFileToString(new File("src/test/resources/dbpedia_label.txt"));
-		WebTarget t = target("dbpedia");
+	public void dbpediaSavePost() {
+		WebTarget t = target("dbpedia/save");
+		Response response = t.request().post(Entity.entity(dbpediaFile, MediaType.TEXT_PLAIN));
+		assertEquals(200, response.getStatus());
+	}
+	
+	@Test
+	public void dbpediaDeletePost() {
+		WebTarget t = target("dbpedia/delete");
+		String template = "lalala";
+		Response response = t.request().post(Entity.entity(template, MediaType.TEXT_PLAIN));
 		
-		Response post = t.request().post(Entity.entity(dbpediaFile, MediaType.APPLICATION_XML));
-		assertEquals(200, post.getStatus());
-		assertEquals("heyho", post.readEntity(String.class));
+		assertEquals(200, response.getStatus());
+		verify(dc).convert(template);
 	}
 }

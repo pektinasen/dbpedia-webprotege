@@ -9,10 +9,23 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>ch.gennri.dpw.ws</param-value>
         </init-param>
+        <init-param>
+        	<param-name>javax.ws.rs.Application</param-name>
+        	<param-value>ch.gennri.dpw.ws.MyApplication</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
+        
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    <context-param>
+	    <param-name>dbpediaurl</param-name>
+	    <param-value>the value</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>webprotegeurl</param-name>
+	    <param-value>the value</param-value>
+	</context-param>
 </web-app>
