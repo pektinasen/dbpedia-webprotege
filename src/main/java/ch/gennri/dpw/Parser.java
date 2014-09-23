@@ -1,5 +1,9 @@
 package ch.gennri.dpw;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,14 +30,23 @@ public class Parser {
 
 	private Token currentToken;
 
-	
+	private String input;
+
 	private static final Pattern rdfsLabel = Pattern.compile("rdfs:label(?:@[a-z]{2})?");
+	private static final Pattern rdfsComment = Pattern.compile("rdfs:comment(?:@[a-z]{2})?");
 	private static final Pattern rdfsSubClassOf = Pattern.compile("rdfs:subClassOf");
 	private static final  Pattern rdfsSubPropertyOf = Pattern.compile("rdfs:subPropertyOf");
 	private static final Pattern owlEquivalentOf = Pattern.compile("owl:equivalentClass");
 	
-	
-	public Parser(Tokenizer tokenizer) {
+	public Parser(String input){
+		this.tokenizer = new Tokenizer(new StringReader(input));
+		this.oc = new OntologyChange();
+	}
+	public Parser(File file) throws FileNotFoundException {
+		this.tokenizer = new Tokenizer(new FileReader(file));
+		this.oc = new OntologyChange();
+	}
+	protected Parser(Tokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 		this.oc = new OntologyChange();
 	}
@@ -46,6 +59,11 @@ public class Parser {
 					tokenizer.getIndex());
 		}
 		readTemplate();
+		nextToken();
+		if (currentToken != null &&
+				currentToken.type == TokenType.Other) {
+			oc.setAppendix(currentToken.value);
+		}
 		return oc;
 	}
 
@@ -135,6 +153,8 @@ public class Parser {
 			throw new ParseException("", 0, 0);
 		}
 		if (rdfsLabel.matcher(currentToken.value).matches()){
+			parseAnnotations(clazz);
+		} else if (rdfsComment.matcher(currentToken.value).matches()){
 			parseAnnotations(clazz);
 		} else if ("labels".equals(currentToken.value)){
 			parseLabelsAnnotations(clazz);

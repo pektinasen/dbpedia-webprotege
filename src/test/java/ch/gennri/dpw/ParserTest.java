@@ -1,8 +1,13 @@
 package ch.gennri.dpw;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.gennri.dpw.xml.Annotation;
 import ch.gennri.dpw.xml.Class;
@@ -14,6 +19,8 @@ import static ch.gennri.dpw.Tokens.*;
 
 public class ParserTest {
 
+	Logger logger = LoggerFactory.getLogger(ParserTest.class);
+	
 	@Test
 	public void classWithRdfsLabel() throws ParseException {
 		Tokenizer tokenizerMock = mock(Tokenizer.class);
@@ -102,5 +109,37 @@ public class ParserTest {
 		assertEquals("Schule", annotation1.getAnnotation());
 		assertEquals("rdfs:comment@en", annotation2.getType());
 		assertEquals("school a person goes to", annotation2.getAnnotation());
+	}
+	
+	@Test
+	public void readAnime() throws FileNotFoundException, ParseException {
+		Tokenizer tokenizer = new Tokenizer(new FileReader("src/test/resources/dbpedia_anime.txt"));
+		Parser parser = new Parser(tokenizer);
+		OntologyChange oc = parser.parse();
+		
+		Class clazz = oc.getClasses().get(0);
+		List<Annotation> annotations = clazz.getAnnotations();
+		assertEquals("Cartoon", clazz.getSub_classes().get(0));
+		for (Annotation a : annotations) {
+			logger.debug("{} = {}", a.getType(), a.getAnnotation());
+		}
+		assertEquals(8, annotations.size());
+		System.out.println(oc.getAppendix());
+		assertTrue("has Appendix", oc.getAppendix() != null);
+		
+//		{{Class
+//			| rdfs:label@en = anime
+//			| rdfs:label@de = anime
+//			| rdfs:label@el = άνιμε
+//			| rdfs:label@it = anime
+//			| rdfs:label@ja = アニメ
+//			| rdfs:label@ko = 일본의 애니메이션
+//			| rdfs:subClassOf = Cartoon
+//			| rdfs:comment@en = A style of animation originating in Japan
+//			| rdfs:comment@el = Στυλ κινουμένων σχεδίων με καταγωγή την Ιαπωνία}}
+//
+//			<ref name="anime">http://en.wikipedia.org/wiki/Anime</ref>
+//			==References==
+//			<references/>
 	}
 }

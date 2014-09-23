@@ -16,7 +16,17 @@ import org.simpleframework.xml.stream.NodeMap;
 import org.simpleframework.xml.stream.OutputNode;
 
 public class SimpleXmlTest {
-
+	@Test
+	public void bla() {
+		System.out.println("rdfs".split("@")[0]);
+		System.out.println("rdfs@en".split("@")[0]);
+		
+			StringBuilder sb = new StringBuilder();
+			sb.append("foobar");
+			sb.delete(sb.length()-3, sb.length());
+			System.out.println(sb);
+	}
+	
 	@Test
 	public void testName() throws Exception {
 		List<String> list = Arrays.asList(new String[]{"a","b","c"});

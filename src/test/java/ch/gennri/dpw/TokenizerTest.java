@@ -1,9 +1,12 @@
 package ch.gennri.dpw;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -84,4 +87,16 @@ public class TokenizerTest {
 		assertEquals(templateEnd , token16);
 	}
 	
+	@Test
+	public void animeFile() throws Exception {
+		Tokenizer tokenizer = new Tokenizer(new FileReader("src/test/resources/dbpedia_anime.txt"));
+		Token t = null;
+		List<Token> tokens = new LinkedList<>();
+		while ((t = tokenizer.next()) != null) {
+			tokens.add(t);
+			System.out.println("Token: "  +t);
+		}
+		System.out.println(tokens);
+		assertEquals(40, tokens.size());
+	}
 }

@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import ch.gennri.dpw.ParseException;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -80,7 +81,7 @@ public class DbpediaTest extends JerseyTest {
 	}
 	
 	@Test
-	public void dbpediaDeletePost() {
+	public void dbpediaDeletePost() throws ParseException {
 		WebTarget t = target("dbpedia/delete");
 		String template = "lalala";
 		Response response = t.request().post(Entity.entity(template, MediaType.TEXT_PLAIN));
@@ -88,4 +89,5 @@ public class DbpediaTest extends JerseyTest {
 		assertEquals(200, response.getStatus());
 		verify(dc).convert(template);
 	}
+
 }

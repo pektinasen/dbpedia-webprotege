@@ -11,11 +11,16 @@ import java.util.Set;
 public class Tokenizer{
 	private Reader source;
 	private int currentChar;
+	private boolean skipNextChar;
 	private StringBuilder builder;
-	private int line;
-	private int index;
+	private int line = 0;
+	private int index = 0;
+	
+	private boolean readValue;
 	
 	private final Set<Character> symbols;
+	
+	private int templateClosed = -1;
 
 	public Tokenizer(Reader source) {
 		if (source == null)
@@ -31,36 +36,75 @@ public class Tokenizer{
 		symbols.add(",".charAt(0));
 	}
 
+	/**
+	 * Get the next Token from the reader.
+	 * @return a token
+	 * @throws ParseException
+	 */
 	public Token next() throws ParseException {
-		nextChar();
+		if (!skipNextChar) {
+			nextChar();
+		} else {
+			skipNextChar = false;
+		}
 		skipWhitespaceAndNewline();
 		if (endOfStream())
 			return null;
+		if (templateClosed == 0 && line != 0) {
+			return readAppendix();
+		}
 		if (Character.isAlphabetic(currentChar))
 			return readName();
 		return readSymbol();
 	}
 
+	/*
+	 * reads the next character from the reader.
+	 */
 	private void nextChar() throws ParseException {
 		try {
 			currentChar = source.read();
-			System.out.print((char) currentChar);
 			index++;
 		} catch (IOException e) {
 			throw new ParseException("Could not read next character", line, index, e);
 		}
 	}
 	
-	
+	/*
+	 * reads an alphabetic word or if it's the right side of an equal 'expression' the whole expression
+	 */
 	private Token readName() throws ParseException {
 		storeCurrentCharAndReadNext();
-		while (isPartOfWord(currentChar)){
-			storeCurrentCharAndReadNext();
+		if (readValue) {
+			while (!isEndOfLine() &&
+					!isEndOfTemplate()){
+				storeCurrentCharAndReadNext();
+			}
+		} else {
+			while (isPartOfWord(currentChar)){
+				storeCurrentCharAndReadNext();
+			}
 		}
-	
+		readValue = false;
 		return new Token(TokenType.Name, extractStoredChars());
 	}
 	
+	private boolean isEndOfTemplate() {
+		boolean isEndOfTemplate = currentChar == '}';
+		if (isEndOfTemplate) {
+			skipNextChar = true;
+		}
+		return isEndOfTemplate;
+	}
+
+	private boolean isEndOfLine() {
+		boolean isEndOfLine = currentChar == (int) '\n';
+		if (isEndOfLine) {
+			line++;
+		}
+		return isEndOfLine;
+	}
+
 	private boolean isPartOfWord(int character) {
 		return	(Character.isLetterOrDigit(character) ||
 				character == ':' |
@@ -74,6 +118,12 @@ public class Tokenizer{
 			switch (currentChar) {
 			case '{':
 				if (oneCurlyOpenBrace) {
+					readValue = false;
+					//initialize templateClosed at first encounter
+					if (templateClosed == -1) {
+						templateClosed = 0;
+					}
+					templateClosed++;
 					return new Token(TokenType.Symbol, "{{");
 				} else {
 					oneCurlyOpenBrace = true;
@@ -81,6 +131,7 @@ public class Tokenizer{
 				break;
 			case '}':
 				if (oneCurlyCloseBrace) {
+					templateClosed--;
 					return new Token(TokenType.Symbol, "}}");
 				} else {
 					oneCurlyCloseBrace = true;
@@ -96,6 +147,7 @@ public class Tokenizer{
 				if (oneCurlyOpenBrace || oneCurlyCloseBrace) {
 					throw new ParseException("Expected second \"{\" or \"}\"", line, index);
 				} else {
+					readValue = true;
 					return new Token(TokenType.Symbol, "=");
 				}
 			case ',':
@@ -126,6 +178,13 @@ public class Tokenizer{
 		}
 	}
 	
+	private Token readAppendix() throws ParseException {
+		while (!endOfStream()) {
+			storeCurrentCharAndReadNext();
+		}
+		return new Token(TokenType.Other, extractStoredChars());
+	}
+
 	void storeCurrentCharAndReadNext() throws ParseException {
 		builder.append((char) currentChar);
 		nextChar();
@@ -152,7 +211,7 @@ public class Tokenizer{
 }
 
 enum TokenType {
-	None, Name, Parameter, Symbol;
+	Name, Symbol, Other;
 }
 
 class Token { 
