@@ -1,0 +1,14 @@
+{{Class
+| rdfs:label@en = anime
+| rdfs:label@de = anime
+| rdfs:label@el = άνιμε
+| rdfs:label@it = anime
+| rdfs:label@ja = アニメ
+| rdfs:label@ko = 일본의 애니메이션
+| rdfs:subClassOf = Cartoon
+| rdfs:comment@en = A style of animation originating in Japan
+| rdfs:comment@el = Στυλ κινουμένων σχεδίων με καταγωγή την Ιαπωνία}}
+
+<ref name="anime">http://en.wikipedia.org/wiki/Anime</ref>
+==References==
+<references/>

@@ -1,0 +1,15 @@
+{{ObjectProperty
+| labels =
+	{{label|en|school}}
+	{{label|nl|school}}
+	{{label|de|schule}}
+	{{label|it|scuola}}
+	{{label|el|σχολείο}}
+	{{label|fr|école}}
+| rdfs:domain = Person
+| rdfs:range = EducationalInstitution
+| comments =
+	{{comment|en|school a person goes or went to}}
+	{{comment|el|σχολείο στο οποίο πηγαίνει ή πήγε κάποιος}}
+| rdfs:subPropertyOf = dul:coparticipatesWith
+}}

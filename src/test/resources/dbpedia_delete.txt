@@ -1,6 +1,5 @@
 {{Class
-|labels =
-	{{label|en|album}}
+| rdfs:label@en = album
 | rdfs:subClassOf = MusicalWork
 | owl:equivalentClass = schema:MusicAlbum , wikidata:Q482994
 }}

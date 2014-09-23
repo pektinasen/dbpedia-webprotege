@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ontology_change>
+	<class IRI="http://www.pizza.com/ontologies/pizza.owl#PizzaBase"
+		changed_by="laparmakerli" op="add">
+		<annotations>
+			<annotation type="rdfs:label@en">album</annotation>
+		</annotations>
+		<sub_classes>
+			<sub_class>MusicalWork</sub_class>
+		</sub_classes>
+		<equivalent_classes>
+			<equivalent_class>schema:MusicAlbum</equivalent_class>
+			<equivalent_class>wikidata:Q482994</equivalent_class>
+		</equivalent_classes>
+	</class>
+</ontology_change>
