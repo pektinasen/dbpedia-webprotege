@@ -18,6 +18,8 @@ public class OntologyChange{
 	
 	@ElementList(entry="data_property", inline=true, required=false)
 	List<Property> dataProperties;
+
+	private String appendix;
 	
 	public OntologyChange() {
 	}
@@ -50,6 +52,14 @@ public class OntologyChange{
 
 	public void setDataProperties(List<Property> dataProperties) {
 		this.dataProperties = dataProperties;
+	}
+
+	public String getAppendix() {
+		return appendix;
+	}
+	
+	public void setAppendix(String value) {
+		this.appendix = value;
 	}
 
 

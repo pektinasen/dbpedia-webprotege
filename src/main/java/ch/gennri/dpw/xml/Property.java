@@ -15,6 +15,12 @@ public class Property extends XmlElement{
 	
 	@ElementList(entry="range", required=false)
 	List<String> ranges;
+
+	@ElementList(entry="disjoint_property", required=false)
+	List<String> disjoint_properties;
+
+	@ElementList(entry="equivalent_property", required=false)
+	List<String> equivalent_properties;
 	
 	public Property() {
 		super();
@@ -45,6 +51,23 @@ public class Property extends XmlElement{
 
 	public void setRanges(List<String> ranges) {
 		this.ranges = ranges;
+	}
+	
+	public void setDisjoint_properties(List<String> disjoint_properties) {
+		this.disjoint_properties = disjoint_properties;
+	}
+
+
+	public List<String> getDisjoint_Properties() {
+		return disjoint_properties;
+	}
+
+	public void setEquivalent_properties(List<String> equivalent_properties) {
+		this.equivalent_properties = equivalent_properties;
+	}
+
+	public List<String> getEquivalent_Properties() {
+		return equivalent_properties;
 	}
 	
 	

@@ -1,9 +1,13 @@
 package ch.gennri.dpw.ws;
 
-public class DbpediaController {
-	int i = 1;
-	
-	public void convert(String template) {
+import ch.gennri.dpw.ParseException;
+import ch.gennri.dpw.Parser;
+import ch.gennri.dpw.xml.OntologyChange;
 
+public class DbpediaController {
+	
+	public OntologyChange convert(String template) throws ParseException {
+		Parser parser = new Parser(template);
+		return parser.parse();
 	}
 }

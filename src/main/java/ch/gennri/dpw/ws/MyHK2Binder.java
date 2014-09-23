@@ -1,6 +1,11 @@
 package ch.gennri.dpw.ws;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
+import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.process.internal.RequestScoped;
 
 public class MyHK2Binder extends AbstractBinder {
 
@@ -15,8 +20,21 @@ public class MyHK2Binder extends AbstractBinder {
 	
 	@Override
 	protected void configure() {
-		// request scope binding
-		// bindAsContract(MyObject.class).in(RequestScoped.class);
+		
+		bindFactory(new Factory<Client>() {
+
+			@Override
+			public Client provide() {
+				return ClientBuilder.newClient();
+			}
+
+			@Override
+			public void dispose(Client instance) {
+				instance.close();
+			}
+		}).to(Client.class);
+//		 request scope binding
+		bindAsContract(MyObject.class).in(RequestScoped.class);
 		
 //		singleton binding
 //		bindAsContract(WebProtegeController.class).in(Singleton.class);

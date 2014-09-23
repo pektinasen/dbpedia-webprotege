@@ -15,6 +15,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import ch.gennri.dpw.ParseException;
 import ch.gennri.dpw.xml.OntologyChange;
 
 @Path(UrlMappings.dbpedia)
@@ -22,12 +23,12 @@ public class Dbpedia {
 
 	@Context
 	ServletContext servletContext;
-	
-//	@Inject
+	@Inject
 	DbpediaController controller;
 	
 	@GET
-	public String getTest() {
+	public String getTest(@Context Client client) {
+		System.out.println(client);
 		return servletContext.getInitParameter("webprotegeurl");
 	}
 	
@@ -35,15 +36,16 @@ public class Dbpedia {
 	@Path("save")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response postTemplateSave(String template){
-		controller.convert(template);
-		
+		OntologyChange oc;
+		try {
+			oc = controller.convert(template);
+		} catch (ParseException e) {
+			return Response.status(400).entity(e).build();
+		}
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl")).
-				path("resource");
-		OntologyChange oc = new OntologyChange();
+		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl"));
 		Response response = target.request().post(
 				Entity.entity(oc, MediaType.APPLICATION_XML), Response.class);
-
 		return response;
 	}
 	
@@ -51,14 +53,16 @@ public class Dbpedia {
 	@Path("delete")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response postTemplateDelete(String template){
-		controller.convert(template);
+		OntologyChange oc;
+		try {
+			oc = controller.convert(template);
+		} catch (ParseException e) {
+			return Response.status(400).entity(e).build();
+		}
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl")).
-				path("resource");
-		OntologyChange oc = new OntologyChange();
+		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl"));
 		Response response = target.request().post(
 				Entity.entity(oc, MediaType.APPLICATION_XML), Response.class);
-
 		return response;
 	}
 	
