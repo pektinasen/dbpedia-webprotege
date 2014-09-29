@@ -3,7 +3,6 @@ package ch.gennri.dpw.xml;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 

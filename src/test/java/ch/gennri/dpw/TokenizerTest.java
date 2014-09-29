@@ -30,7 +30,7 @@ public class TokenizerTest {
 		Token rdfsSubclassOf = new Token(TokenType.Name, "rdfs:subClassOf");
 		Token equals = new Token(TokenType.Symbol, "=");
 		Token comma = new Token(TokenType.Symbol, ",");
-		Token schemaMusicAlbum = new Token(TokenType.Name, "schema:MusicAlbum");
+		Token schemaMusicAlbum = new Token(TokenType.Name, "schema:MusicAlbum , wikidata:Q482994");
 		Token wikidata = new Token(TokenType.Name, "wikidata:Q482994");
 		Token musicalWork = new Token(TokenType.Name, "MusicalWork");
 		Token owlToken = new Token(TokenType.Name, "owl:equivalentClass");
@@ -45,46 +45,58 @@ public class TokenizerTest {
 		assertEquals(parameterSeperator , token3);
 		
 		Token token4 = tokenizer.next();
-		assertEquals(rdfsLabelEn , token4);
-		
-		Token token44 = tokenizer.next();
-		assertEquals(equals , token44);
+		assertEquals(Tokens.labels , token4);
 		
 		Token token5 = tokenizer.next();
-		assertEquals(album , token5);
+		assertEquals(equals , token5);
 		
 		Token token6 = tokenizer.next();
-		assertEquals(parameterSeperator , token6);
+		assertEquals(templateBegin , token6);
 		
 		Token token7 = tokenizer.next();
-		assertEquals(rdfsSubclassOf , token7);
+		assertEquals(Tokens.label , token7);
 		
 		Token token8 = tokenizer.next();
-		assertEquals(equals , token8);
+		assertEquals(parameterSeperator , token8);
 		
 		Token token9 = tokenizer.next();
-		assertEquals(musicalWork , token9);
+		assertEquals(Tokens.nameEn , token9);
 		
 		Token token10 = tokenizer.next();
 		assertEquals(parameterSeperator , token10);
 		
 		Token token11 = tokenizer.next();
-		assertEquals(owlToken , token11);
+		assertEquals(Tokens.album , token11);
 		
 		Token token12 = tokenizer.next();
-		assertEquals(equals , token12);
+		assertEquals(templateEnd , token12);
 		
 		Token token13 = tokenizer.next();
-		assertEquals(schemaMusicAlbum , token13);
+		assertEquals(parameterSeperator , token13);
 		
 		Token token14 = tokenizer.next();
-		assertEquals(comma , token14);
+		assertEquals(rdfsSubclassOf , token14);
 		
 		Token token15 = tokenizer.next();
-		assertEquals(wikidata , token15);
+		assertEquals(equals , token15);
 		
 		Token token16 = tokenizer.next();
-		assertEquals(templateEnd , token16);
+		assertEquals(musicalWork , token16);
+		
+		Token token17 = tokenizer.next();
+		assertEquals(parameterSeperator , token17);
+		
+		Token token18 = tokenizer.next();
+		assertEquals(owlToken , token18);
+		
+		Token token19 = tokenizer.next();
+		assertEquals(equals , token19);
+		
+		Token token20 = tokenizer.next();
+		assertEquals(schemaMusicAlbum , token20);
+		
+		Token token23 = tokenizer.next();
+		assertEquals(templateEnd, token23);
 	}
 	
 	@Test

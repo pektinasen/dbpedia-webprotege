@@ -3,6 +3,8 @@ package ch.gennri.dpw.ws;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import ch.gennri.dpw.xml.Annotation;
 import ch.gennri.dpw.xml.Class;
 import ch.gennri.dpw.xml.Property;
@@ -40,9 +42,9 @@ public class WebProtegeController {
 		return sb.toString();
 	}
 	
-	public String convert(Property property) {
+	public String convert(Property property, String propertyType) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{Class\n");
+		sb.append("{{"+propertyType+"\n");
 		addLabelsAndComments(sb, property.getAnnotations());
 		if (!property.getRanges().isEmpty()) {
 			sb.append("| rdfs:range = ");
@@ -80,6 +82,7 @@ public class WebProtegeController {
 			sb.delete(sb.length()- VALUE_SEP.length(), sb.length()).append("\n");
 		}
 		sb.append("}}");
+		
 		return sb.toString();
 	}
 
@@ -90,7 +93,7 @@ public class WebProtegeController {
 		if (!labels.isEmpty()) {
 			sb.append("|labels =\n");
 			for (Annotation a : labels) {
-				sb.append("\t{{label|");
+				sb.append("{{label|");
 				// ex.: rdfs:label@en
 				String[] split = a.getType().split("@");
 				if (split.length > 1) {
@@ -103,7 +106,7 @@ public class WebProtegeController {
 		if (!comments.isEmpty()) {
 			sb.append("|comment =\n");
 			for (Annotation a : comments) {
-				sb.append("\t{{comment|");
+				sb.append("{{comment|");
 				// ex.: rdfs:comment@en
 				String[] split = a.getType().split("@");
 				if (split.length > 1) {
@@ -125,5 +128,10 @@ public class WebProtegeController {
 				throw new IllegalArgumentException(a.toString());
 			}
 		}
+	}
+
+	public Response sendToDbpedia(String template, String propertyName) {
+		// TODO Auto-generated method stub
+		return Response.ok().build();
 	}
 }

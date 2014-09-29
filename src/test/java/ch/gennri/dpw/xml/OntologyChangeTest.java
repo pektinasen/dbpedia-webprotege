@@ -1,8 +1,8 @@
 package ch.gennri.dpw.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -32,6 +32,35 @@ public class OntologyChangeTest {
 	
 	@Test
 	public void serializePizzaExample() throws Exception {
+		final OntologyChange ontologyChange = createOntologyChangeObject();
+		
+		VisitorStrategy strategy = new VisitorStrategy(new Visitor() {
+			
+			@Override
+			public void write(Type type, NodeMap<OutputNode> node) throws Exception {
+				if (java.util.List.class.equals(type.getType())) {
+					node.remove("class");
+				}
+			}
+			
+			@Override
+			public void read(Type type, NodeMap<InputNode> node) throws Exception {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		Format format = new Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"); 
+		Serializer serializer = new Persister(strategy,format);
+		StringWriter sw = new StringWriter();
+		serializer.write(ontologyChange, sw);
+		
+		
+		String fileToString = FileUtils.readFileToString(new File("src/test/resources/pizzaTest.xml"));
+		assertEquals(fileToString, sw.toString());
+	}
+
+	private OntologyChange createOntologyChangeObject() {
 		final OntologyChange ontologyChange = new OntologyChange();
 		final List<Class> classes = new LinkedList<>();
 		final List<Annotation> annotations = new ArrayList<>();
@@ -97,31 +126,7 @@ public class OntologyChangeTest {
 		ontologyChange.setClasses(classes);
 		ontologyChange.setObjectProperties(objectProperties);
 		ontologyChange.setDataProperties(dataProperties);
-		
-		VisitorStrategy strategy = new VisitorStrategy(new Visitor() {
-			
-			@Override
-			public void write(Type type, NodeMap<OutputNode> node) throws Exception {
-				if (java.util.List.class.equals(type.getType())) {
-					node.remove("class");
-				}
-			}
-			
-			@Override
-			public void read(Type type, NodeMap<InputNode> node) throws Exception {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		Format format = new Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"); 
-		Serializer serializer = new Persister(strategy,format);
-		StringWriter sw = new StringWriter();
-		serializer.write(ontologyChange, sw);
-		
-		
-		String fileToString = FileUtils.readFileToString(new File("src/test/resources/pizzaTest.xml"));
-		assertEquals(fileToString, sw.toString());
+		return ontologyChange;
 	}
 	
 	@Test
@@ -129,6 +134,19 @@ public class OntologyChangeTest {
 		Persister serializer = new Persister();
 		OntologyChange read = serializer.read(OntologyChange.class, new File("src/test/resources/pizzaTest.xml"));
 		assertNotNull(read);
-		
+	}
+	
+	@Test
+	public void persisterTest() throws Exception {
+		OntologyChange oc = createOntologyChangeObject();
+		OntologyChangePersister persister = new OntologyChangePersister();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			persister.write(oc, stream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String ocXml = new String(stream.toByteArray());
+		System.out.println(ocXml);
 	}
 }

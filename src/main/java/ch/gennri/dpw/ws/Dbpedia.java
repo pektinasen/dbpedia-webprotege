@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -25,44 +26,38 @@ public class Dbpedia {
 	ServletContext servletContext;
 	@Inject
 	DbpediaController controller;
-	
-	@GET
-	public String getTest(@Context Client client) {
-		System.out.println(client);
-		return servletContext.getInitParameter("webprotegeurl");
-	}
-	
+		
 	@POST
 	@Path("save")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public Response postTemplateSave(String template){
+	public Response postTemplateSave(String template,
+			@PathParam(value = "user") String user,
+			@PathParam(value = "action") String action){
 		OntologyChange oc;
 		try {
 			oc = controller.convert(template);
 		} catch (ParseException e) {
 			return Response.status(400).entity(e).build();
 		}
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl"));
-		Response response = target.request().post(
-				Entity.entity(oc, MediaType.APPLICATION_XML), Response.class);
+		String url = servletContext.getInitParameter("webprotegeurl");
+		Response response = controller.sendToWebProtege(oc, url);
 		return response;
 	}
 	
 	@POST
 	@Path("delete")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public Response postTemplateDelete(String template){
+	public Response postTemplateDelete(String template,
+			@PathParam(value = "user") String user,
+			@PathParam(value = "action") String action){
 		OntologyChange oc;
 		try {
 			oc = controller.convert(template);
 		} catch (ParseException e) {
 			return Response.status(400).entity(e).build();
 		}
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(servletContext.getInitParameter("webprotegeurl"));
-		Response response = target.request().post(
-				Entity.entity(oc, MediaType.APPLICATION_XML), Response.class);
+		String url = servletContext.getInitParameter("webprotegeurl");
+		Response response = controller.sendToWebProtege(oc, url);
 		return response;
 	}
 	

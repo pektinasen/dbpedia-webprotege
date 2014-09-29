@@ -35,5 +35,6 @@ public class Tokens {
 	public static final Token commentSchool3 = new Token(TokenType.Name, "person");
 	public static final Token commentSchool4 = new Token(TokenType.Name, "goes");
 	public static final Token commentSchool5 = new Token(TokenType.Name, "to");
+	public static final Token equivalentClasses = new Token(TokenType.Name, "schema:MusicAlbum , wikidata:Q482994");
 	
 }

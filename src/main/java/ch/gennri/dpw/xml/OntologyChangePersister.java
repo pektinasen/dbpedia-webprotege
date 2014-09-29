@@ -25,7 +25,7 @@ public class OntologyChangePersister {
 		this.serializer = new Persister(strategy, format);
 	}
 	
-	public void write(Object source, OutputStream out) throws Exception {
+	public void write(OntologyChange source, OutputStream out) throws Exception {
 		serializer.write(source, out);
 	}
 	

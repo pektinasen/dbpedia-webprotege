@@ -19,6 +19,12 @@ import ch.gennri.dpw.xml.OntologyChange;
 import ch.gennri.dpw.xml.Property;
 import ch.gennri.dpw.xml.XmlElement;
 
+/**
+ * With the tokens returned by the Tokenizer, the parser builds an OntologyChange Object.
+ * 
+ * @author Sascha
+ *
+ */
 public class Parser {
 
 	private static Logger logger = LoggerFactory.getLogger(Parser.class);
@@ -29,8 +35,6 @@ public class Parser {
 			"DatatypeProperty", "ObjectProperty");
 
 	private Token currentToken;
-
-	private String input;
 
 	private static final Pattern rdfsLabel = Pattern.compile("rdfs:label(?:@[a-z]{2})?");
 	private static final Pattern rdfsComment = Pattern.compile("rdfs:comment(?:@[a-z]{2})?");
@@ -129,8 +133,16 @@ public class Parser {
 		} 
 	}
 
-	private void parseSubPropertyOf(Property property) {
-		// TODO Auto-generated method stub
+	private void parseSubPropertyOf(Property property) throws ParseException {
+		nextToken();
+		assertIsEqualSign();
+		nextToken();
+		assertIsName();
+		String[] split = currentToken.value.split(",");
+		for (String subProperty : split) {
+			property.getSub_properties().add(subProperty.trim());
+		}
+		nextToken();
 	}
 
 	private void readObjectProperty() throws ParseException {
@@ -257,42 +269,29 @@ public class Parser {
 	}
 
 	private void parseSubClassOf(Class clazz) throws ParseException {
-		List<String> subclasses = new LinkedList<>();
 		nextToken();
 		assertIsEqualSign();
 		nextToken();
 		assertIsName();
-		subclasses.add(currentToken.value);
-		nextToken();
-		while (isComma()) {
-			nextToken();
-			assertIsName();
-			subclasses.add(currentToken.value);
+		String[] split = currentToken.value.split(",");
+		for (String subClass : split) {
+			clazz.getSub_classes().add(subClass.trim());
 		}
-		clazz.getSub_classes().addAll(subclasses);
+		nextToken();
 	}
 	
 	private void parseEquivalentClass(Class clazz) throws ParseException {
-		LinkedList<String> equivalentClasses = new LinkedList<>();
 		nextToken();
 		assertIsEqualSign();
 		nextToken();
 		assertIsName();
-		equivalentClasses.add(currentToken.value);
-		nextToken();
-		while (isComma()) {
-			nextToken();
-			assertIsName();
-			equivalentClasses.add(currentToken.value);
+		String[] split = currentToken.value.split(",");
+		for (String equivalentClass : split) {
+			clazz.getEquivalent_classes().add(equivalentClass.trim());
 		}
-		clazz.getEquivalent_classes().addAll(equivalentClasses);
+		nextToken();
 	}
-	
-	private boolean isComma() {
-		return currentToken.type.equals(TokenType.Symbol) && 
-				currentToken.value.equals(",");
-	}
-	
+		
 	private void assertIsName() throws ParseException {
 		if (!currentToken.type.equals(TokenType.Name)) {
 			throw new ParseException("", 0, 0);

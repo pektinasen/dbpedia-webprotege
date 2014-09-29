@@ -8,6 +8,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/*
+ * Größtenteils werden die Tokens am Leerzeichen getrennt mit ein paar Ausnahmen.
+ * "{{Class" sind 2 Tokens", alles hinter einem "="-Zeichen wird bis zum Zeilenende als ein Token gelesen.
+ * Der Tokenizer ist leider etwas missraten. Es wird auch shcon ein bisschen geparsed.
+ * @author Sascha
+ *
+ */
 public class Tokenizer{
 	private Reader source;
 	private int currentChar;
@@ -84,6 +91,8 @@ public class Tokenizer{
 			while (isPartOfWord(currentChar)){
 				storeCurrentCharAndReadNext();
 			}
+			if (!Character.isWhitespace(currentChar))
+				skipNextChar = true;
 		}
 		readValue = false;
 		return new Token(TokenType.Name, extractStoredChars());
@@ -98,7 +107,7 @@ public class Tokenizer{
 	}
 
 	private boolean isEndOfLine() {
-		boolean isEndOfLine = currentChar == (int) '\n';
+		boolean isEndOfLine = (currentChar == (int) '\n') || (currentChar == (int) '\r');
 		if (isEndOfLine) {
 			line++;
 		}

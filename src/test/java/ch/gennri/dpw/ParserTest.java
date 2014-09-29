@@ -38,9 +38,7 @@ public class ParserTest {
 				symbolParametSep,
 				owlEquivalent,
 				symbolEquals,
-				schemaMusicAlbum,
-				symbolComma,
-				wikidata,
+				equivalentClasses,
 				templateEnd);
 		
 		Parser parser = new Parser(tokenizerMock);
