@@ -29,8 +29,8 @@ public class OntologyChangePersister {
 		serializer.write(source, out);
 	}
 	
-	public <T> T read(java.lang.Class<? extends T> type, InputStream source) throws Exception {
-		return serializer.read(type, source);
+	public OntologyChange read(InputStream source) throws Exception {
+		return serializer.read(OntologyChange.class, source);
 	}
 	
 	private class OntologyChangeVisitor implements Visitor {

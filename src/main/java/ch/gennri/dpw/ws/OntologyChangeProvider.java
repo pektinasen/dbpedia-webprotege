@@ -1,7 +1,9 @@
 package ch.gennri.dpw.ws;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -15,6 +17,9 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.gennri.dpw.xml.OntologyChange;
 import ch.gennri.dpw.xml.OntologyChangePersister;
 
@@ -23,6 +28,8 @@ import ch.gennri.dpw.xml.OntologyChangePersister;
 @Consumes("application/xml")
 public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>, MessageBodyWriter<OntologyChange> {
 
+	private static Logger logger = LoggerFactory.getLogger(OntologyChangeProvider.class);
+	
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
@@ -56,6 +63,7 @@ public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>
 	public boolean isReadable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
 		// TODO Auto-generated method stub
+		logger.debug("is readable");
 		return type == OntologyChange.class;
 	}
 
@@ -64,9 +72,10 @@ public class OntologyChangeProvider implements MessageBodyReader<OntologyChange>
 			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
+		logger.debug("read from");
 		OntologyChangePersister persister = new OntologyChangePersister();
 		try {
-			return persister.read(OntologyChange.class, entityStream);
+			return persister.read(entityStream);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

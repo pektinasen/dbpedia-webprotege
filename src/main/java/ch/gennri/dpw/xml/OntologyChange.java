@@ -24,6 +24,9 @@ public class OntologyChange{
 	}
 	
 	public List<Class> getClasses() {
+		if (classes == null) {
+			classes = new LinkedList<>();
+		}
 		return classes;
 	}
 

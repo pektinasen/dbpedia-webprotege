@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,5 +149,14 @@ public class OntologyChangeTest {
 		}
 		String ocXml = new String(stream.toByteArray());
 		System.out.println(ocXml);
+	}
+	
+	@Test
+	public void simpleTest() throws Exception{
+		String fileContents = FileUtils.readFileToString(new File("src/test/resources/ontology_change_1.xml"));
+		Serializer serializer = new Persister();
+		OntologyChange read = serializer.read(OntologyChange.class, fileContents);
+		List<Property> objectProperties = read.getObjectProperties();
+		System.out.println(objectProperties);
 	}
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ontology_change>
+	<object_property IRI="http://www.pizza.com/ontologies/pizza.owl#isIngredientOf" changed_by="laparmakerli" op="add">
+		<annotations>
+			<annotation type="rdfs:comment">was drin ist..</annotation>
+		</annotations>
+		<sub_properties>
+			<sub_property>http://www.pizza.com/ontologies/pizza.owl#isBaseOf</sub_property>
+			<sub_property>http://www.pizza.com/ontologies/pizza.owl#isToppingOf</sub_property>
+		</sub_properties>
+	</object_property>
+</ontology_change>
