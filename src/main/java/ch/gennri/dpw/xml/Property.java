@@ -1,5 +1,6 @@
 package ch.gennri.dpw.xml;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.simpleframework.xml.ElementList;
@@ -29,6 +30,9 @@ public class Property extends XmlElement{
 		super(IRI, op, changed_by);
 	}
 	public List<String> getSub_properties() {
+		if (sub_properties == null) {
+			sub_properties = new LinkedList<>();
+		}
 		return sub_properties;
 	}
 
@@ -37,6 +41,9 @@ public class Property extends XmlElement{
 	}
 
 	public List<String> getDomains() {
+		if (domains == null) {
+			domains = new LinkedList<>();
+		}
 		return domains;
 	}
 
@@ -45,6 +52,9 @@ public class Property extends XmlElement{
 	}
 
 	public List<String> getRanges() {
+		if (ranges == null) {
+			ranges = new LinkedList<>();
+		}
 		return ranges;
 	}
 
@@ -52,22 +62,26 @@ public class Property extends XmlElement{
 		this.ranges = ranges;
 	}
 	
+	public List<String> getDisjoint_Properties() {
+		if (disjoint_properties == null) {
+			disjoint_properties = new LinkedList<>();
+		}
+		return disjoint_properties;
+	}
+	
 	public void setDisjoint_properties(List<String> disjoint_properties) {
 		this.disjoint_properties = disjoint_properties;
 	}
 
-
-	public List<String> getDisjoint_Properties() {
-		return disjoint_properties;
-	}
-
-	public void setEquivalent_properties(List<String> equivalent_properties) {
-		this.equivalent_properties = equivalent_properties;
-	}
-
 	public List<String> getEquivalent_Properties() {
+		if (equivalent_properties == null) {
+			equivalent_properties = new LinkedList<>();
+		}
 		return equivalent_properties;
 	}
 	
+	public void setEquivalent_properties(List<String> equivalent_properties) {
+		this.equivalent_properties = equivalent_properties;
+	}
 	
 }
