@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import ch.gennri.dpw.bot.TokenBot;
 import ch.gennri.dpw.xml.Annotation;
 import ch.gennri.dpw.xml.Class;
 import ch.gennri.dpw.xml.Property;
@@ -41,7 +42,7 @@ public class WebProtegeController {
 		sb.append("}}");
 		return sb.toString();
 	}
-	
+
 	public String convert(Property property, String propertyType) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{{"+propertyType+"\n");
@@ -82,7 +83,7 @@ public class WebProtegeController {
 			sb.delete(sb.length()- VALUE_SEP.length(), sb.length()).append("\n");
 		}
 		sb.append("}}");
-		
+
 		return sb.toString();
 	}
 
@@ -134,4 +135,11 @@ public class WebProtegeController {
 		// TODO Auto-generated method stub
 		return Response.ok().build();
 	}
+    public Response sendToDbpediawithCredentials(String template, String propertyName, String token, String session_name, String session_id) {
+        // TODO Auto-generated method stub
+        String wiki_host = "http://160.45.114.250/mediawiki/";
+        TokenBot tokenBot = new TokenBot(session_name, session_id, wiki_host);
+        tokenBot.save_article(propertyName, template, token);
+        return Response.ok().build();
+    }
 }
