@@ -12,7 +12,7 @@ public class OntologyChange{
 	@ElementList(entry="class", inline=true, required=false)
 	List<Class> classes;
 
-    @ElementList(entry="named_individual", inline=true, required=false)
+    @ElementList(entry="object_property", inline=true, required=false)
 	List<Property> objectProperties;
 
 	@ElementList(entry="data_property", inline=true, required=false)
