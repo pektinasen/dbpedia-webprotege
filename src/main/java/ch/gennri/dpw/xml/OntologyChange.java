@@ -11,18 +11,18 @@ public class OntologyChange{
 
 	@ElementList(entry="class", inline=true, required=false)
 	List<Class> classes;
-	
-	@ElementList(entry="object_property", inline=true, required=false)
+
+    @ElementList(entry="named_individual", inline=true, required=false)
 	List<Property> objectProperties;
-	
+
 	@ElementList(entry="data_property", inline=true, required=false)
 	List<Property> dataProperties;
 
 	private String appendix;
-	
+
 	public OntologyChange() {
 	}
-	
+
 	public List<Class> getClasses() {
 		if (classes == null) {
 			classes = new LinkedList<>();
@@ -59,11 +59,11 @@ public class OntologyChange{
 	public String getAppendix() {
 		return appendix;
 	}
-	
+
 	public void setAppendix(String value) {
 		this.appendix = value;
 	}
 
 
-	
+
 }
