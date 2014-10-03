@@ -14,8 +14,13 @@ import ch.gennri.dpw.xml.Class;
 import ch.gennri.dpw.xml.OntologyChange;
 import ch.gennri.dpw.xml.Property;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Path(UrlMappings.webprotege)
 public class WebProtege {
+
+    private static Logger logger = LoggerFactory.getLogger(WebProtege.class);
 
 	@Inject
 	WebProtegeController controller;
@@ -29,18 +34,27 @@ public class WebProtege {
 
 		for (Class clazz : oc.getClasses()) {
 			String classTemplate = controller.convert(clazz);
+            logger.debug("ONTOLOGYCLASS: " + clazz);
 			String className = clazz.getIRI();
-            controller.sendToDbpediawithCredentials(classTemplate, className, token, session_name, session_id);
+            String[] splits = className.split("/");
+            String article_name = splits[splits.length-1];
+            controller.sendToDbpediawithCredentials(classTemplate, "OntologyClass:" + article_name, token, session_name, session_id);
 		}
 		for (Property p : oc.getDataProperties()) {
 			String propertyTemplate = controller.convert(p, "DatatypeProperty");
 			String propertyName = p.getIRI();
-            controller.sendToDbpediawithCredentials(propertyTemplate, propertyName, token, session_name, session_id);
+            logger.debug("DATATYPE_PROPERTY: " + propertyName);
+            String[] splits = propertyName.split("/");
+            String article_name = splits[splits.length-1];
+            controller.sendToDbpediawithCredentials(propertyTemplate, "Datatype:" + article_name, token, session_name, session_id);
 		}
 		for (Property p : oc.getObjectProperties()) {
 			String propertyTemplate = controller.convert(p, "ObjectProperty");
 			String propertyName = p.getIRI();
-            controller.sendToDbpediawithCredentials(propertyTemplate, propertyName, token, session_name, session_id);
+            logger.debug("ONTOLOGY_PROPERTY: " + propertyName);
+            String[] splits = propertyName.split("/");
+            String article_name = splits[splits.length-1];
+            controller.sendToDbpediawithCredentials(propertyTemplate, "OntologyProperty:" + article_name, token, session_name, session_id);
 		}
 		return Response.ok().build();
 	}
