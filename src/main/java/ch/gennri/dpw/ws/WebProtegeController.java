@@ -125,6 +125,8 @@ public class WebProtegeController {
 				labels.add(a);
 			} else if (a.getType().startsWith("rdfs:comment")) {
 				comments.add(a);
+            } else if (a.getType().contains("wasDerivedFrom")) {
+                continue;
 			} else {
 				throw new IllegalArgumentException(a.toString());
 			}
